@@ -67,3 +67,4 @@ yarn-error.log
 
 /backend/node_modules
 /backend/data.js
+/backend/.env
