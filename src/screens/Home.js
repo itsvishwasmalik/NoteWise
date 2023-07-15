@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {View, StyleSheet, FlatList, Text, TouchableOpacity} from 'react-native';
 import {Appbar, FAB} from 'react-native-paper';
 import axios from 'axios';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import useAuth from '../hooks/useAuth';
 import {getNotes} from '../store/slices/notes';
@@ -17,11 +17,13 @@ const Home = () => {
   const fetchNotes = async () => {
     console.log('fetching notes');
     const {data} = await axios.get('/api/notes/get_user_notes/');
-    dispatch(
-      getNotes({
-        notes: data,
-      }),
-    );
+    if (data) {
+      dispatch(
+        getNotes({
+          notes: data,
+        }),
+      );
+    }
   };
 
   useEffect(() => {
@@ -40,11 +42,11 @@ const Home = () => {
           borderColor: 'white',
           borderWidth: 0.75,
           width: '45%',
-          height: 100,
+          height: 122,
           borderRadius: 10,
           padding: 10,
-          marginVertical: 10,
-          marginHorizontal: 10,
+          margin: 10,
+          overflow: 'hidden',
         }}
         onPress={() => handleNotePress(item._id)}>
         <Text style={styles.title}>{item.title}</Text>
@@ -61,7 +63,7 @@ const Home = () => {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
+    logout();
   };
 
   return (

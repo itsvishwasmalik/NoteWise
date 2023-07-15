@@ -10,7 +10,7 @@ const notes = createSlice({
   initialState,
   reducers: {
     getNotes: (state, action) => {
-      const tempNotes = action.payload.notes.reduce((obj, note) => {
+      const tempNotes = action.payload.notes?.reduce((obj, note) => {
         obj[note._id] = note;
         return obj;
       }, {});

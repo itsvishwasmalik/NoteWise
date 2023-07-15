@@ -6,20 +6,33 @@ import useAuth from '../hooks/useAuth';
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const {login} = useAuth();
 
   const handleLogin = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert('Please enter a valid email address');
+      setIsLoading(false);
+      return;
+    }
+    if (password.length === 0) {
+      alert('Please enter a password to login');
+      return;
+    }
+    setIsLoading(true);
     try {
       await login(email, password);
     } catch (error) {
       console.log(error);
     }
+    setIsLoading(false);
   };
 
   return (
     <View style={styles.container}>
-      {/* <Image source={require('./assets/logo.png')} style={styles.logo} /> */}
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
       <TextInput
         label="Email"
         value={email}
@@ -53,7 +66,12 @@ const LoginScreen = () => {
         }}
       />
 
-      <Button mode="contained" onPress={handleLogin} style={styles.button}>
+      <Button
+        mode="contained"
+        loading={isLoading}
+        disabled={isLoading}
+        onPress={handleLogin}
+        style={styles.button}>
         Login
       </Button>
     </View>
@@ -84,6 +102,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 5,
     backgroundColor: '#2596be',
+    color: '#ffffff',
   },
 });
 

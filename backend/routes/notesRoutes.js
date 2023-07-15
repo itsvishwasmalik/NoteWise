@@ -26,6 +26,48 @@ const getUserFromToken = (req, res, next) => {
 
 notesRouter.use(getUserFromToken);
 
+// Sync offline notes with server
+notesRouter.post('/sync_notes', async (req, res) => {
+  const notes = req.body.notes;
+  const deletedNotes = req.body.deletedNotes;
+  const createdNotes = [];
+  const updatedNotes = [];
+  for (const note of notes) {
+    if (note._id) {
+      const updatedNote = await Notes.findOne({
+        _id: note._id,
+        user: req.user._id,
+      });
+      if (updatedNote) {
+        updatedNote.title = note.title || updatedNote.title;
+        updatedNote.content = note.content || updatedNote.content;
+        updatedNotes.push(updatedNote);
+      }
+    } else {
+      const createdNote = new Notes({
+        title: note.title,
+        content: note.content,
+        user: req.user._id,
+      });
+      createdNotes.push(createdNote);
+    }
+  }
+  const createdNotesResult = await Notes.insertMany(createdNotes);
+  const updatedNotesResult = await Promise.all(
+    updatedNotes.map(note => note.save()),
+  );
+  const deletedNotesResult = await Promise.all(
+    deletedNotes.map(note =>
+      Notes.deleteOne({_id: note._id, user: req.user._id}),
+    ),
+  );
+  res.send({
+    createdNotes: createdNotesResult,
+    updatedNotes: updatedNotesResult,
+    deletedNotes: deletedNotesResult,
+  });
+});
+
 notesRouter.get('/get_user_notes', async (req, res) => {
   const notes = await Notes.find({user: req.user._id});
   res.send(notes);
