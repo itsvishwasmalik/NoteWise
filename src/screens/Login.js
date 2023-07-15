@@ -1,18 +1,25 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import {TextInput, Button} from 'react-native-paper';
+import useAuth from '../hooks/useAuth';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    // Handle login logic here
+  const {login} = useAuth();
+
+  const handleLogin = async () => {
+    try {
+      await login(email, password);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Image source={require('./assets/logo.png')} style={styles.logo} />
+      {/* <Image source={require('./assets/logo.png')} style={styles.logo} /> */}
       <TextInput
         label="Email"
         value={email}

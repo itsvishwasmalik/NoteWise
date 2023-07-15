@@ -6,7 +6,6 @@ import {
 } from 'react-redux';
 
 import {persistStore} from 'redux-persist';
-
 import rootReducer from './reducer.js';
 
 const store = configureStore({

@@ -10,7 +10,9 @@ export const AuthProvider = ({children}) => {
   const dispatch = useDispatch();
   const state = useSelector(state => state.account);
 
-  axios.defaults.baseURL = 'http://localhost:5000';
+  axios.defaults.baseURL = 'http://localhost:5000/';
+
+  console.log(state);
 
   axios.interceptors.response.use(
     function (response) {
@@ -24,41 +26,36 @@ export const AuthProvider = ({children}) => {
     },
   );
 
-  if ('user' in state && state.user && 'jwt_access' in state.user) {
+  if ('user' in state && state.user && 'token' in state.user) {
     axios.defaults.headers.common['Authorization'] =
-      'Bearer ' + state.user.jwt_access;
+      'Bearer ' + state.user.token;
   }
 
-  const login = (email, password) => {
-    return new Promise((resolve, reject) => {
-      axios
-        .post('/users/login/', {
-          email: email,
-          password: password,
-        })
-        .then(response => {
-          const {data} = response;
-          console.log(response);
-          if (response.status === 200) {
-            dispatch(
-              handleLogin({
-                user: {
-                  id: data._id,
-                  name: data.name,
-                  email: data.email,
-                  isAdmin: data.isAdmin,
-                  jwt_access: data.jwt_access,
-                  jwt_refresh: data.jwt_refresh,
-                },
-              }),
-            );
-          }
-        })
-        .catch(error => {
-          console.log(error);
-          reject(error);
-        });
-    });
+  const login = async (email, password) => {
+    console.log(email, password);
+    try {
+      const response = await axios.post('/api/users/login/', {
+        email,
+        password,
+      });
+      const {data} = response;
+      if (response.status === 200) {
+        dispatch(
+          handleLogin({
+            user: {
+              id: data._id,
+              name: data.name,
+              email: data.email,
+              isAdmin: data.isAdmin,
+              token: data.token,
+            },
+          }),
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      return Promise.reject(error);
+    }
   };
 
   const logout = () => {
@@ -66,58 +63,21 @@ export const AuthProvider = ({children}) => {
   };
 
   const register = async (firstName, lastName, email, password) => {
-    return new Promise((resolve, reject) => {
-      axios
-        .post('/register/', {
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          password: password,
-        })
-        .then(response => {
-          const responseData = response.data;
-          console.log(responseData);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    });
+    try {
+      const response = await axios.post('/api/users/register/', {
+        name: firstName + ' ' + lastName,
+        email: email,
+        password: password,
+      });
+      const responseData = response.data;
+      console.log(responseData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const forgotPassword = async email => {
-    return new Promise((resolve, reject) => {
-      axios
-        .post('/forgot-password/', {
-          email: email,
-        })
-        .then(response => {
-          const responseData = response.data;
-          console.log(responseData);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    });
-  };
-
-  const resetPassword = async (email, password) => {
-    return new Promise((resolve, reject) => {
-      axios
-        .post('/reset-password/', {
-          email: email,
-          password: password,
-          token: new URL(window.location.href).searchParams.get('token'),
-        })
-        .then(response => {
-          const responseData = response.data;
-          console.log(responseData);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    });
-  };
-
+  const forgotPassword = () => {};
+  const resetPassword = () => {};
   const updateProfile = () => {};
 
   return (

@@ -1,17 +1,85 @@
-import React, {useState} from 'react';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import axios from 'axios';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Appbar, TextInput} from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import {dispatch} from '../store';
+import {addNote, deleteNote, updateNote} from '../store/slices/notes';
 
 const NoteScreen = () => {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const notes = useSelector(state => state.notes.notes);
   const [note, setNote] = useState({title: '', content: ''});
+  const [currentNoteId, setCurrentNoteId] = useState(null);
+
+  useEffect(() => {
+    if (route.params?.noteId && currentNoteId !== route.params?.noteId) {
+      setCurrentNoteId(route.params.noteId);
+      setNote({
+        title: notes[route.params.noteId].title,
+        content: notes[route.params.noteId].content,
+      });
+    }
+  }, [notes, route.params?.noteId]);
+
+  const handleBack = () => {
+    navigation.navigate('Home');
+  };
+
+  const handleSaveNote = async () => {
+    try {
+      if (currentNoteId) {
+        const {data} = await axios.post(
+          `/api/notes/update_note/${currentNoteId}`,
+          note,
+        );
+        dispatch(
+          updateNote({
+            note: data,
+          }),
+        );
+      } else {
+        const {data} = await axios.post('/api/notes/create_note/', note);
+        dispatch(
+          addNote({
+            note: data,
+          }),
+        );
+      }
+      navigation.navigate('Home', {refresh: true});
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDeleteNote = async () => {
+    try {
+      const {data} = await axios.post(
+        `/api/notes/delete_note/${currentNoteId}`,
+      );
+      dispatch(
+        deleteNote({
+          id: data._id,
+        }),
+      );
+      navigation.navigate('Home', {refresh: true});
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <Appbar.Header style={styles.header}>
-        <Appbar.Action icon="arrow-left" onPress={() => {}} />
+        <Appbar.Action icon="arrow-left" onPress={handleBack} />
         <Appbar.Content title="" />
         <Appbar.Action icon="pin" onPress={() => {}} />
-        <Appbar.Action icon="content-save" onPress={() => {}} />
+        {currentNoteId && (
+          <Appbar.Action icon="delete" onPress={handleDeleteNote} />
+        )}
+        <Appbar.Action icon="content-save" onPress={handleSaveNote} />
       </Appbar.Header>
       <View style={styles.content}>
         <View style={styles.note}>
