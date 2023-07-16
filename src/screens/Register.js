@@ -4,28 +4,30 @@ import {TextInput, Button} from 'react-native-paper';
 import useAuth from '../hooks/useAuth';
 import {useNavigation} from '@react-navigation/native';
 
-const LoginScreen = () => {
+const RegisterScreen = () => {
   const navigation = useNavigation();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const {login} = useAuth();
+  const {register} = useAuth();
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       alert('Please enter a valid email address');
       setIsLoading(false);
       return;
     }
-    if (password.length === 0) {
-      alert('Please enter a password to login');
+    if (password.length < 6) {
+      alert('Password must be at least 6 characters long');
+      setIsLoading(false);
       return;
     }
     setIsLoading(true);
     try {
-      await login(email, password);
+      await register(name, email, password);
     } catch (error) {
       console.log(error);
     }
@@ -35,6 +37,21 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
+      <TextInput
+        label="Name"
+        value={name}
+        onChangeText={text => setName(text)}
+        autoCapitalize="words"
+        style={styles.input}
+        theme={{
+          colors: {
+            primary: '#2596be',
+            underlineColor: 'transparent',
+            onSurfaceVariant: '#383838',
+          },
+          roundness: 10,
+        }}
+      />
       <TextInput
         label="Email"
         value={email}
@@ -72,15 +89,15 @@ const LoginScreen = () => {
         mode="contained"
         loading={isLoading}
         disabled={isLoading}
-        onPress={handleLogin}
+        onPress={handleRegister}
         style={styles.button}>
-        Login
+        Register
       </Button>
       <Button
         mode="contained"
-        onPress={() => navigation.navigate('Register')}
+        onPress={() => navigation.navigate('Login')}
         style={styles.button}>
-        Register
+        Login
       </Button>
     </View>
   );
@@ -114,4 +131,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default RegisterScreen;

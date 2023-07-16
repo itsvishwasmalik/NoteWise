@@ -3,6 +3,7 @@ import {createContext} from 'react';
 import {handleLogin, handleLogout} from '../store/account';
 import axios from 'axios';
 import {useDispatch, useSelector} from 'react-redux';
+import {openSnackbar} from '../store/slices/snackbar';
 
 const AuthContext = createContext(null);
 
@@ -50,9 +51,22 @@ export const AuthProvider = ({children}) => {
             },
           }),
         );
+      } else {
+        dispatch(
+          openSnackbar({
+            visible: true,
+            message: 'Invalid email or password',
+          }),
+        );
       }
     } catch (error) {
       console.log(error);
+      dispatch(
+        openSnackbar({
+          visible: true,
+          message: error.response.data.message,
+        }),
+      );
       return Promise.reject(error);
     }
   };
@@ -61,17 +75,35 @@ export const AuthProvider = ({children}) => {
     dispatch(handleLogout());
   };
 
-  const register = async (firstName, lastName, email, password) => {
+  const register = async (name, email, password) => {
     try {
       const response = await axios.post('/api/users/register/', {
-        name: firstName + ' ' + lastName,
+        name: name,
         email: email,
         password: password,
       });
-      const responseData = response.data;
-      console.log(responseData);
+      const {data} = response;
+      if (response.status === 200) {
+        dispatch(
+          handleLogin({
+            user: {
+              id: data._id,
+              name: data.name,
+              email: data.email,
+              isAdmin: data.isAdmin,
+              token: data.token,
+            },
+          }),
+        );
+      }
     } catch (error) {
       console.log(error);
+      dispatch(
+        openSnackbar({
+          visible: true,
+          message: error.response.data.message,
+        }),
+      );
     }
   };
 

@@ -6,6 +6,7 @@ import {Appbar, TextInput} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {dispatch} from '../store';
 import {addNote, deleteNote, updateNote} from '../store/slices/notes';
+import {openSnackbar} from '../store/slices/snackbar';
 
 const NoteScreen = () => {
   const route = useRoute();
@@ -51,6 +52,12 @@ const NoteScreen = () => {
       navigation.navigate('Home', {refresh: true});
     } catch (error) {
       console.error(error);
+      dispatch(
+        openSnackbar({
+          visible: true,
+          message: 'Failed to save note',
+        }),
+      );
     }
   };
 
@@ -67,6 +74,12 @@ const NoteScreen = () => {
       navigation.navigate('Home', {refresh: true});
     } catch (error) {
       console.error(error);
+      dispatch(
+        openSnackbar({
+          visible: true,
+          message: 'Failed to delete note',
+        }),
+      );
     }
   };
 

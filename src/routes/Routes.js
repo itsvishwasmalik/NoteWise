@@ -7,6 +7,10 @@ const Stack = createNativeStackNavigator();
 
 const LoginScreen = Loadable(React.lazy(() => import('../screens/Login.js')));
 
+const RegisterScreen = Loadable(
+  React.lazy(() => import('../screens/Register.js')),
+);
+
 const HomeScreen = Loadable(React.lazy(() => import('../screens/Home.js')));
 
 const NoteScreen = Loadable(React.lazy(() => import('../screens/Note.js')));
@@ -17,13 +21,22 @@ const Routes = () => {
   return (
     <Stack.Navigator>
       {!isLoggedIn ? (
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
+        <>
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Register"
+            component={RegisterScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </>
       ) : (
         <Stack.Screen
           name="Home"
