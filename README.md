@@ -1,5 +1,10 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
+![Screenshot_1689481077](https://github.com/itsvishwasmalik/NoteWise/assets/97444195/07f1d416-4f6f-4514-9241-6609653cb59b)
+![Screenshot_1689481077](https://github.com/itsvishwasmalik/NoteWise/assets/97444195/3c4771df-69d9-4701-8f85-f5ad0698fcd9)
+![Screenshot_1689481091](https://github.com/itsvishwasmalik/NoteWise/assets/97444195/cd15aa62-c8e6-41dd-b560-6d8d046356b2)
+![Screenshot_1689481206 (copy)](https://github.com/itsvishwasmalik/NoteWise/assets/97444195/5d5c5b67-1262-44e0-8868-baad42e556af)
+
 # Getting Started
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
@@ -42,6 +47,7 @@ npm run ios
 # OR using Yarn
 yarn ios
 ```
+
 
 If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
 
