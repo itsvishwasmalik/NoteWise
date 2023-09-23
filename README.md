@@ -1,9 +1,6 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-![Screenshot_1689481077](https://github.com/itsvishwasmalik/NoteWise/assets/97444195/07f1d416-4f6f-4514-9241-6609653cb59b)
-![Screenshot_1689481077](https://github.com/itsvishwasmalik/NoteWise/assets/97444195/3c4771df-69d9-4701-8f85-f5ad0698fcd9)
-![Screenshot_1689481091](https://github.com/itsvishwasmalik/NoteWise/assets/97444195/cd15aa62-c8e6-41dd-b560-6d8d046356b2)
-![Screenshot_1689481206 (copy)](https://github.com/itsvishwasmalik/NoteWise/assets/97444195/5d5c5b67-1262-44e0-8868-baad42e556af)
+![Untitled design](https://github.com/itsvishwasmalik/NoteWise/assets/97444195/f8376dfd-1126-4d06-87f6-013869099a7c)
 
 # Getting Started
 
@@ -37,6 +34,7 @@ npm run android
 # OR using Yarn
 yarn android
 ```
+
 
 ### For iOS
 
